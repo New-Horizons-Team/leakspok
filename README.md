@@ -1,37 +1,70 @@
-# pii
+# leakspok
 
-![PII Searching](http://www.celwalls.com/wallpapers/large/1961.jpg)
+![Go Report Card](https://goreportcard.com/badge/github.com/New-Horizons-Team/leakspok)
+![Build Status](https://travis-ci.com/New-Horizons-Team//leakspok.svg?branch=main)
 
-## Description
+**leakspok** is an open-source library written in Go, inspired and cloned from [pii](https://github.com/gen0cide/pii), in the  designed to detect Personally Identifiable Information (PII) in strings. It helps developers ensure data privacy and compliance by spotting potential information leaks.
 
-pii is a small library and command line utility that aims to make detecting PII a little easier for security analysts by doing the following:
+## Features
 
-- Attempts to standardize well-known PII regular expressions to avoid discrepencies
-- Allows the creation of combinatorial logic around multiple regular expressions for more granularity
-- Proccesses files in parallel, giving performance enhancements over Python / Ruby / etc.
-- Is written as a library allowing for easy integration into existing Go tools
-
-The tool is very much evolving as people contribute. This is one of those tools that should get better over time as improvements are made and the patterns are tuned even further.
+- Detect various PII types including:
+    - Banking Info
+    - Brazilian CNPJ, CPF, and cellphone numbers
+    - Credit Card numbers
+    - Email Addresses
+    - IP Addresses
+    - Phone Numbers
+    - SSN (Social Security Numbers)
+    - Street Addresses
+    - UUIDs
+    - VIN (Vehicle Identification Numbers)
 
 ## Installation
 
-```sh
-go get github.com/gen0cide/pii/cmd/pii
+To install leakspok, use `go get`:
+
+```
+go get github.com/New-Horizons-Team/leakspok
 ```
 
 ## Usage
 
-```sh
-pii search foo.txt
+Here's a simple example to use leakspok:
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/New-Horizons-Team/leakspok"
+)
+
+func main() {
+    text := []{"My email is john.doe@example.com", "my sensible pii"}
+	t := leakspok.NewDefaultStringTester()
+	result, err := t.Find(text)
+    } 
+	
+	// Error handling
+	...
+
+    // Print result
+	fmt.Println("result: %v", result)
+	
+}
 ```
 
-### Options
+## Contributing
 
-- `pii -j/--json` will output the data in JSON format.
-- `pii search --find-matches` will attempt to extract the findings from the files (expirimental)
+1. Fork the repository on GitHub.
+2. Clone the forked repository to your machine.
+3. Create a new branch.
+4. Make your changes and write tests when practical.
+5. Commit changes to the branch.
+6. Push changes to your fork.
+7. Open a pull request.
 
-### Contact
+## License
 
-Twitter: [@alexlevinson](https://twitter.com/alexlevinson)
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-Slack: [LOTR Slack](https://slofile.com/slack/lotr) (gandalf, #pii)

@@ -3,7 +3,7 @@
 ![Go Report Card](https://goreportcard.com/badge/github.com/New-Horizons-Team/leakspok)
 ![Build Status](https://travis-ci.com/New-Horizons-Team//leakspok.svg?branch=main)
 
-**leakspok** is an open-source library written in Go, inspired and cloned from [pii](https://github.com/gen0cide/pii), in the  designed to detect Personally Identifiable Information (PII) in strings. It helps developers ensure data privacy and compliance by spotting potential information leaks.
+**leakspok** is an open-source library written in Go, inspired in [pii](https://github.com/gen0cide/pii), designed to detect Personally Identifiable Information (PII) in strings. It helps developers ensure data privacy and compliance by spotting potential information leaks.
 
 ## Features
 

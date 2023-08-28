@@ -5,9 +5,9 @@ type RuleSet map[string]Rule
 
 // Rule defines a matching requirement
 type Rule struct {
-	Name        string  `json:"name,omitempty" csv:"name"`
-	Description string  `json:"description,omitempty" csv:"description"`
-	Severity    int     `json:"severity,omitempty" csv:"severity"`
+	Name        string  `json:"name,omitempty"`
+	Description string  `json:"description,omitempty"`
+	Severity    int     `json:"severity,omitempty""`
 	Filter      Matcher `json:"-"`
 }
 

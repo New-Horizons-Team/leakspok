@@ -11,13 +11,6 @@ var (
 		// "link":           defaultLinkRule,
 	}
 
-	defaultPhoneRule = Rule{
-		Name:        "phone_number",
-		Description: "phone number",
-		Severity:    3,
-		Filter:      Phone(),
-	}
-
 	defaultCPFRule = Rule{
 		Name:        "brazilian_CPF",
 		Description: "Brazilian CPF",
@@ -32,27 +25,13 @@ var (
 		Filter:      CNPJ(),
 	}
 
-	defaultBrazilianPIIRule = Rule{
-		Name:        "brazilian_PII",
-		Description: "Brazilian PII",
-		Severity:    3,
-		Filter:      BrazilianPII(),
-	}
-
 	defaultLinkRule = Rule{
 		Name:        "link",
 		Description: "link or URL",
 		Severity:    1,
 		Filter:      Link(),
 	}
-
-	defaultSSNRule = Rule{
-		Name:        "ssn",
-		Description: "social security number",
-		Severity:    5,
-		Filter:      SSN(),
-	}
-
+	
 	defaultEmailRule = Rule{
 		Name:        "email_address",
 		Description: "valid email address",
@@ -72,32 +51,5 @@ var (
 		Description: "valid credit card number",
 		Severity:    5,
 		Filter:      CreditCard(),
-	}
-
-	defaultAddressRule = Rule{
-		Name:        "street_address",
-		Description: "street address or PO box",
-		Severity:    3,
-		Filter:      Address(),
-	}
-
-	defaultBankInfoRule = Rule{
-		Name:        "banking_info",
-		Description: "IBAN or ACH routing number",
-		Severity:    5,
-	}
-
-	defaultUUIDRule = Rule{
-		Name:        "uuid",
-		Description: "valid UUID (v3,v4,v5) or GUID",
-		Severity:    3,
-		Filter:      UUID(),
-	}
-
-	defaultVINRule = Rule{
-		Name:        "vin",
-		Description: "vehicle identification number (VIN)",
-		Severity:    2,
-		Filter:      VIN(),
 	}
 )

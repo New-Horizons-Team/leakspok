@@ -69,7 +69,6 @@ func Phone() Matcher {
 				matchemail,
 				matchfilename,
 				matchrepeatingnumber,
-				matchluhn,
 			),
 		),
 	)
@@ -117,7 +116,6 @@ func IP() Matcher {
 func CreditCard() Matcher {
 	return And(
 		Any(
-			matchluhn,
 			matchcreditCard,
 			matchaltcreditcard,
 		),

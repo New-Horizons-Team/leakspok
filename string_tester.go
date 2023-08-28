@@ -3,12 +3,11 @@ package leakspok
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
-// Must sync with the DefaultRuleSet
-// TODO: use code generaton for this
+// StringTesterResult must sync with the DefaultRuleSet
+// TODO: use code generation for this
 type StringTesterResult struct {
 	BrazilianCNPJ bool `json:"brazilian_CNPJ"`
 	BrazilianCPF  bool `json:"brazilian_CPF"`
@@ -17,19 +16,19 @@ type StringTesterResult struct {
 	IPAddress     bool `json:"ip_address"`
 }
 
-// Tester defines a test harness for assessment
+// StringTester  defines a test harness for assessment
 type StringTester struct {
-	Rules []Rule `json:"rules,omitempty" csv:"rules"`
+	Rules []Rule `json:"rules,omitempty"`
 }
 
-// NewEmptyTester returns an empty Test harness with no rules loaded
+// NewEmptyStringTester returns an empty StringTester object with no rules loaded
 func NewEmptyStringTester() *StringTester {
 	return &StringTester{
 		Rules: []Rule{},
 	}
 }
 
-// NewDefaultTester creates a new default Test harness with all default rules included
+// NewDefaultStringTester creates a new default StringTester object with all default rules included
 func NewDefaultStringTester() *StringTester {
 	t := NewEmptyStringTester()
 	for _, r := range DefaultRuleSet {
@@ -38,11 +37,10 @@ func NewDefaultStringTester() *StringTester {
 	return t
 }
 
-// NewDefaultTester creates a new default Test harness with all default rules included
+// Find NewDefaultTester creates a new default StringTesterResult object with all default rules included
 func (t *StringTester) Find(s []string) (StringTesterResult, error) {
 	matched := false
 	results := make(map[string]bool)
-	//results := StringTesterResult{}
 
 	for _, rule := range t.Rules {
 		for _, str := range s {
@@ -55,8 +53,6 @@ func (t *StringTester) Find(s []string) (StringTesterResult, error) {
 		}
 
 		results[rule.Name] = matched
-		//dur := time.Since(ts).Nanoseconds()
-		fmt.Println("match: " + rule.Name + " " + strconv.FormatBool(matched))
 	}
 
 	// Unmarshal the JSON data into StringTesterResult

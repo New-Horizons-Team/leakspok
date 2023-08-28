@@ -109,39 +109,8 @@ func matchtestcreditcard(s string) bool {
 	}
 }
 
-func matchluhn(s string) bool {
-	baseMatches := creditCardBaseRegexp.FindAllString(s, -1)
-	for _, match := range baseMatches {
-		noDash := strings.Replace(match, `-`, ``, -1)
-		noSpace := strings.Replace(noDash, ` `, ``, -1)
-		if matchtestcreditcard(noSpace) {
-			continue
-		}
-		if luhn(noSpace) {
-			return true
-		}
-	}
-	return false
-}
-
 func matchaltcreditcard(s string) bool {
 	return altCreditCardRegexp.MatchString(s)
-}
-
-func matchindiapan(s string) bool {
-	return indiaPanRegexp.MatchString(s)
-}
-
-func matchcontainswhitespace(s string) bool {
-	return containsSpacesRegexp.MatchString(s)
-}
-
-func matchcontainsletters(s string) bool {
-	return containsLettersRegexp.MatchString(s)
-}
-
-func matchbeginswithzero(s string) bool {
-	return beginsWithZeroRegexp.MatchString(s)
 }
 
 func matchrepeatingnumber(s string) bool {
@@ -204,14 +173,6 @@ func matchguid(s string) bool {
 	return guidRegexp.MatchString(s)
 }
 
-func matchvisaCreditCard(s string) bool {
-	return visaCreditCardRegexp.MatchString(s)
-}
-
-func matchmcCreditCard(s string) bool {
-	return mcCreditCardRegexp.MatchString(s)
-}
-
 func matchiban(s string) bool {
 	return ibanRegexp.MatchString(s)
 }
@@ -238,27 +199,6 @@ func matchuuid5(s string) bool {
 
 func matchurl(s string) bool {
 	return urlRegexp.MatchString(s)
-}
-
-func luhn(s string) bool {
-	var sum int
-	var alternate bool
-	numberLen := len(s)
-	if numberLen < 13 || numberLen > 19 {
-		return false
-	}
-	for i := numberLen - 1; i > -1; i-- {
-		mod, _ := strconv.Atoi(string(s[i]))
-		if alternate {
-			mod *= 2
-			if mod > 9 {
-				mod = (mod % 10) + 1
-			}
-		}
-		alternate = !alternate
-		sum += mod
-	}
-	return sum%10 == 0
 }
 
 // matchCPF returns a Brazilian CPF match

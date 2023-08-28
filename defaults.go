@@ -16,7 +16,6 @@ var (
 		Description: "phone number",
 		Severity:    3,
 		Filter:      Phone(),
-		Exporter:    ExportPhones,
 	}
 
 	defaultCPFRule = Rule{
@@ -24,7 +23,6 @@ var (
 		Description: "Brazilian CPF",
 		Severity:    3,
 		Filter:      CPF(),
-		Exporter:    ExportCPFs,
 	}
 
 	defaultCNPJRule = Rule{
@@ -32,7 +30,6 @@ var (
 		Description: "Brazilian CNPJ",
 		Severity:    3,
 		Filter:      CNPJ(),
-		Exporter:    ExportCNPJs,
 	}
 
 	defaultBrazilianPIIRule = Rule{
@@ -47,7 +44,6 @@ var (
 		Description: "link or URL",
 		Severity:    1,
 		Filter:      Link(),
-		Exporter:    ExportLinks,
 	}
 
 	defaultSSNRule = Rule{
@@ -55,7 +51,6 @@ var (
 		Description: "social security number",
 		Severity:    5,
 		Filter:      SSN(),
-		Exporter:    ExportSSNs,
 	}
 
 	defaultEmailRule = Rule{
@@ -63,7 +58,6 @@ var (
 		Description: "valid email address",
 		Severity:    3,
 		Filter:      Email(),
-		Exporter:    ExportEmails,
 	}
 
 	defaultIPRule = Rule{
@@ -71,7 +65,6 @@ var (
 		Description: "valid IPv4 or IPv6 address",
 		Severity:    2,
 		Filter:      IP(),
-		Exporter:    ExportIPs,
 	}
 
 	defaultCreditCardRule = Rule{
@@ -79,7 +72,6 @@ var (
 		Description: "valid credit card number",
 		Severity:    5,
 		Filter:      CreditCard(),
-		Exporter:    ExportCreditCards,
 	}
 
 	defaultAddressRule = Rule{
@@ -87,15 +79,12 @@ var (
 		Description: "street address or PO box",
 		Severity:    3,
 		Filter:      Address(),
-		Exporter:    ExportAddresses,
 	}
 
 	defaultBankInfoRule = Rule{
 		Name:        "banking_info",
 		Description: "IBAN or ACH routing number",
 		Severity:    5,
-		Filter:      BankInfo(),
-		Exporter:    ExportBankInfos,
 	}
 
 	defaultUUIDRule = Rule{
@@ -103,7 +92,6 @@ var (
 		Description: "valid UUID (v3,v4,v5) or GUID",
 		Severity:    3,
 		Filter:      UUID(),
-		Exporter:    ExportUUIDs,
 	}
 
 	defaultVINRule = Rule{
@@ -111,6 +99,5 @@ var (
 		Description: "vehicle identification number (VIN)",
 		Severity:    2,
 		Filter:      VIN(),
-		Exporter:    ExportVINs,
 	}
 )

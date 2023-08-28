@@ -240,15 +240,6 @@ func matchurl(s string) bool {
 	return urlRegexp.MatchString(s)
 }
 
-func matchusbankrouting(s string) bool {
-	for _, bc := range usbanks {
-		if bc.MatchString(s) {
-			return true
-		}
-	}
-	return false
-}
-
 func luhn(s string) bool {
 	var sum int
 	var alternate bool

@@ -19,7 +19,6 @@ type StringTesterResult struct {
 
 // Tester defines a test harness for assessment
 type StringTester struct {
-	TestSettings
 	Rules []Rule `json:"rules,omitempty" csv:"rules"`
 }
 

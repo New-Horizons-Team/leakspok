@@ -147,7 +147,6 @@ func BankInfo() Matcher {
 	return And(
 		Any(
 			matchiban,
-			matchusbankrouting,
 		),
 		Not(matchrepeatingnumber),
 	)

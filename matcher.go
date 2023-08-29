@@ -122,8 +122,6 @@ func CreditCard() Matcher {
 		All(
 			Not(matchuuid),
 			Not(matchrepeatingnumber),
-			// Not(matchfilename),
-			// Not(matchphone),
 			Not(matchtestcreditcard),
 		),
 	)

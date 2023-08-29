@@ -7,7 +7,7 @@ type RuleSet map[string]Rule
 type Rule struct {
 	Name        string  `json:"name,omitempty"`
 	Description string  `json:"description,omitempty"`
-	Severity    int     `json:"severity,omitempty""`
+	Severity    int     `json:"severity,omitempty"`
 	Filter      Matcher `json:"-"`
 }
 

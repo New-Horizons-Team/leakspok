@@ -38,17 +38,27 @@ func NewDefaultStringTester() *StringTester {
 }
 
 // Find NewDefaultTester creates a new default StringTesterResult object with all default rules included
-func (t *StringTester) Find(s []string) (StringTesterResult, error) {
+func (t *StringTester) Find(s []string, removeSpecialChars bool) (StringTesterResult, error) {
 	matched := false
 	results := make(map[string]bool)
 
 	for _, rule := range t.Rules {
 		for _, str := range s {
 			for _, x := range strings.Fields(str) {
+
+				//remove unnecessary characters
+				if removeSpecialChars {
+					replacer := strings.NewReplacer(`"`, "", ".", "", "-", "", `,`, "", `]`, "", `}`, "")
+					x = replacer.Replace(x)
+				}
+
 				matched = rule.Filter(x)
 				if matched {
 					break
 				}
+			}
+			if matched {
+				break
 			}
 		}
 

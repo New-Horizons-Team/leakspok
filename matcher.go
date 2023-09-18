@@ -116,8 +116,8 @@ func IP() Matcher {
 func CreditCard() Matcher {
 	return And(
 		Any(
-			matchcreditCard,
-			matchaltcreditcard,
+			matchMasterCardCreditCard,
+			matchVisaCreditCard,
 		),
 		All(
 			Not(matchuuid),

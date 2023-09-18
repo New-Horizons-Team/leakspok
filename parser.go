@@ -149,8 +149,16 @@ func matchip(s string) bool {
 	return ipRegexp.MatchString(s)
 }
 
-func matchcreditCard(s string) bool {
+func matchCreditCard(s string) bool {
 	return creditCardRegexp.MatchString(s)
+}
+
+func matchVisaCreditCard(s string) bool {
+	return visaCreditCardRegexp.MatchString(s)
+}
+
+func matchMasterCardCreditCard(s string) bool {
+	return mcCreditCardRegexp.MatchString(s)
 }
 
 func matchstreetAddress(s string) bool {
@@ -203,6 +211,13 @@ func matchurl(s string) bool {
 
 // matchCPF returns a Brazilian CPF match
 func matchCPF(s string) bool {
+	//s = strings.ReplaceAll(s, `"}],`, "")
+	//s = strings.ReplaceAll(s, `"`, "")
+	// removes dots and dashes
+
+	replacer := strings.NewReplacer(`"`, "", ".", "", "-", "", `,`, "", `]`, "", `}`, "")
+	s = replacer.Replace(s)
+
 	// A valid CPF must have 11 digits
 	if len(s) != 11 {
 		return false

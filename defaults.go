@@ -31,7 +31,7 @@ var (
 		Severity:    1,
 		Filter:      Link(),
 	}
-	
+
 	defaultEmailRule = Rule{
 		Name:        "email_address",
 		Description: "valid email address",

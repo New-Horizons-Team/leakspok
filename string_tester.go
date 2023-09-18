@@ -37,6 +37,15 @@ func NewDefaultStringTester() *StringTester {
 	return t
 }
 
+// NewStringTester creates a new  StringTester object with all rules included by the user
+func NewStringTester(set RuleSet) *StringTester {
+	t := NewEmptyStringTester()
+	for _, r := range set {
+		t.Rules = append(t.Rules, r)
+	}
+	return t
+}
+
 // Find NewDefaultTester creates a new default StringTesterResult object with all default rules included
 func (t *StringTester) Find(s []string, removeSpecialChars bool) (StringTesterResult, error) {
 	matched := false

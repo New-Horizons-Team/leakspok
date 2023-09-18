@@ -3,50 +3,50 @@ package leakspok
 var (
 	// DefaultRuleSet provides a rule set of default PII rules
 	DefaultRuleSet = RuleSet{
-		"cpf_number":    defaultCPFRule,
-		"cnpj_number":   defaultCNPJRule,
-		"email_address": defaultEmailRule,
-		"ip_address":    defaultIPRule,
-		"credit_card":   defaultCreditCardRule,
-		// "link":           defaultLinkRule,
+		"cpf_number":    DefaultCPFRule,
+		"cnpj_number":   DefaultCNPJRule,
+		"email_address": DefaultEmailRule,
+		"ip_address":    DefaultIPRule,
+		"credit_card":   DefaultCreditCardRule,
+		// "link":           DefaultLinkRule,
 	}
 
-	defaultCPFRule = Rule{
+	DefaultCPFRule = Rule{
 		Name:        "brazilian_CPF",
 		Description: "Brazilian CPF",
 		Severity:    3,
 		Filter:      CPF(),
 	}
 
-	defaultCNPJRule = Rule{
+	DefaultCNPJRule = Rule{
 		Name:        "brazilian_CNPJ",
 		Description: "Brazilian CNPJ",
 		Severity:    3,
 		Filter:      CNPJ(),
 	}
 
-	defaultLinkRule = Rule{
+	DefaultLinkRule = Rule{
 		Name:        "link",
 		Description: "link or URL",
 		Severity:    1,
 		Filter:      Link(),
 	}
 
-	defaultEmailRule = Rule{
+	DefaultEmailRule = Rule{
 		Name:        "email_address",
 		Description: "valid email address",
 		Severity:    3,
 		Filter:      Email(),
 	}
 
-	defaultIPRule = Rule{
+	DefaultIPRule = Rule{
 		Name:        "ip_address",
 		Description: "valid IPv4 or IPv6 address",
 		Severity:    2,
 		Filter:      IP(),
 	}
 
-	defaultCreditCardRule = Rule{
+	DefaultCreditCardRule = Rule{
 		Name:        "credit_card",
 		Description: "valid credit card number",
 		Severity:    5,

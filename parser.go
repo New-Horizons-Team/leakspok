@@ -10,7 +10,7 @@ import (
 const (
 	phonePattern           = `(?:(?:\+?\d{1,3}[-.\s*]?)?(?:\(?\d{3}\)?[-.\s*]?)?\d{3}[-.\s*]?\d{4,6})|(?:(?:(?:\(\+?\d{2}\))|(?:\+?\d{2}))\s*\d{2}\s*\d{3}\s*\d{4})`
 	phonesWithExtsPattern  = `(?i)(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*(?:[2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|(?:[2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?(?:[2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?(?:[0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(?:\d+)?)`
-	cpfPattern             = `(\d{3}\.\d{3}\.\d{3}-\d{2})|(\d{11})`
+	cpfPattern             = `(\d{3}\.\d{3}\.\d{3}-\d{2})|(\d{3}\.\d{3}\.\d{5})|(\d{9}-\d{2})|(\d{11})`
 	cnpjPattern            = `(\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}|(\d{14}))`
 	linkPattern            = `(?:(?:https?:\/\/)?(?:[a-z0-9.\-]+|www|[a-z0-9.\-])[.](?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))*\))+(?:\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))*\)|[^\s!()\[\]{};:\'".,<>?]))`
 	emailPattern           = `(?i)([A-Za-z0-9!#$%&'*+\/=?^_{|.}~-]+@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)`
@@ -211,7 +211,10 @@ func matchurl(s string) bool {
 
 // matchCPF returns a Brazilian CPF match
 func matchCPF(s string) bool {
-	// A valid CPF must have 11 digits
+
+	replacer := strings.NewReplacer(`"`, "", `,`, "", `]`, "", `}`, "", `.`, "", `-`, "")
+	s = replacer.Replace(s)
+
 	if len(s) != 11 {
 		return false
 	}
@@ -220,6 +223,7 @@ func matchCPF(s string) bool {
 		return false
 	}
 
+	fmt.Println(s)
 	// Calculate first check digit
 	var sum int
 	for i, r := range s[:9] {

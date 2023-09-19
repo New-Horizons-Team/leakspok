@@ -223,7 +223,6 @@ func matchCPF(s string) bool {
 		return false
 	}
 
-	fmt.Println(s)
 	// Calculate first check digit
 	var sum int
 	for i, r := range s[:9] {
@@ -258,9 +257,12 @@ func matchCPF(s string) bool {
 
 // matchCNPJ returns a Brazilian CNPJ match
 func matchCNPJ(s string) bool {
-	// A valid CNPJ must have at least 14 digits
-	// or at maximum 18 (counting slashes and periods
-	if len(s) < 14 || len(s) > 18 {
+
+	replacer := strings.NewReplacer(`"`, "", `,`, "", `]`, "", `}`, "", `.`, "", `-`, "", `\`, "", `/`, "")
+	s = replacer.Replace(s)
+
+	// A valid CNPJ must have 14 digits without punctuations
+	if len(s) != 14 {
 		return false
 	}
 	if !cnpjRegexp.MatchString(s) {

@@ -46,7 +46,7 @@ func NewStringTester(set RuleSet) *StringTester {
 	return t
 }
 
-// Find NewDefaultTester creates a new default StringTesterResult object with all default rules included
+// Find creates a new default StringTesterResult object with all default rules included
 func (t *StringTester) Find(s []string) (StringTesterResult, error) {
 	matched := false
 	results := make(map[string]bool)
@@ -81,4 +81,26 @@ func (t *StringTester) Find(s []string) (StringTesterResult, error) {
 	}
 
 	return testerResult, nil
+}
+
+// MaskFindings masks all matches within the rules
+func (t *StringTester) MaskFindings(s string) string {
+	matched := false
+	var matchedWords []string
+
+	for _, rule := range t.Rules {
+		for _, x := range strings.Fields(s) {
+			matched = rule.Filter(x)
+			if matched {
+				matchedWords = append(matchedWords, x)
+			}
+		}
+	}
+
+	//replace all matched words
+	for _, word := range matchedWords {
+		s = strings.ReplaceAll(s, word, DefaultMaskString)
+	}
+
+	return s
 }

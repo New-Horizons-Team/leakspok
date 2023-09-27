@@ -53,3 +53,6 @@ var (
 		Filter:      CreditCard(),
 	}
 )
+
+// DefaultMaskString is used to mask matches. It's useful when should report leaks on security alerts
+var DefaultMaskString = "<MASKED>"

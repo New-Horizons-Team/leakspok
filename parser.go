@@ -2,6 +2,7 @@ package leakspok
 
 import (
 	"fmt"
+	"net"
 	"regexp"
 	"strconv"
 	"strings"
@@ -138,7 +139,17 @@ func matchemail(s string) bool {
 }
 
 func matchipv4(s string) bool {
-	return ipv4Regexp.MatchString(s)
+	replacer := strings.NewReplacer(`"`, "", `,`, "", `]`, "", `}`, "", `-`, "")
+	s = replacer.Replace(s)
+
+	if ipv4Regexp.MatchString(s) {
+		parsedIP := net.ParseIP(s)
+		if parsedIP != nil {
+			return true
+		}
+	}
+
+	return false
 }
 
 func matchipv6(s string) bool {

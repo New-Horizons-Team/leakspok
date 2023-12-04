@@ -57,6 +57,66 @@ func TestFindCPF(t *testing.T) {
 	}
 }
 
+func TestFindIP(t *testing.T) {
+	tests := []struct {
+		input  string
+		expect bool
+	}{
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 129.12.34.1 abc"}],
+                 "temperature": 0.1}'`, true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 12.34.1.34"}],
+                 "temperature": 0.1}'`, true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 299.34.1.34"}],
+                 "temperature": 0.1}'`, false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 200.340.1.34"}],
+                 "temperature": 0.1}'`, false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 200.34.1024.34"}],
+                 "temperature": 0.1}'`, false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 200.34.124.256"}],
+                 "temperature": 0.1}'`, false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 4.3.23 date comparing"}],
+                 "temperature": 0.1}'`, false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 4.03.23 date comparing"}],
+                 "temperature": 0.1}'`, false},
+	}
+
+	rules := RuleSet{
+		"cpf_number":    DefaultCPFRule,
+		"cnpj_number":   DefaultCNPJRule,
+		"email_address": DefaultEmailRule,
+		"ip_address":    DefaultIPRule,
+	}
+
+	leakspokTester := NewStringTester(rules)
+	for _, test := range tests {
+		lines := strings.Split(test.input, "\n")
+		got, err := leakspokTester.Find(lines)
+		if err != nil {
+			t.Errorf("For input %q expected %v but got %v", test.input, test.expect, got)
+		}
+
+		if got.IPAddress != test.expect {
+			t.Errorf("For input %q expected %v but got %v", test.input, test.expect, got.IPAddress)
+		}
+	}
+}
+
 func TestMaskFindings(t *testing.T) {
 	tests := []struct {
 		input  string

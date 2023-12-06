@@ -94,6 +94,22 @@ func TestFindIP(t *testing.T) {
                  "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing IP leaking 4.03.23 date comparing"}],
                  "temperature": 0.1}'`, false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 22::50 ipv6 matching"}],
+                 "temperature": 0.1}'`, false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 22::50"}],
+                 "temperature": 0.1}'`, false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 2001:0000:130F:0000:0000:09C0:876A:130B ipv6 matching"}],
+                 "temperature": 0.1}'`, false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP leaking 2001:0000:130F:0000:0000:09C0:876A:130B"}],
+                 "temperature": 0.1}'`, false},
 	}
 
 	rules := RuleSet{

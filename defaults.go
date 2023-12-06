@@ -41,9 +41,9 @@ var (
 
 	DefaultIPRule = Rule{
 		Name:        "ip_address",
-		Description: "valid IPv4 or IPv6 address",
+		Description: "valid IPv4 address",
 		Severity:    2,
-		Filter:      IP(),
+		Filter:      IPv4(),
 	}
 
 	DefaultCreditCardRule = Rule{

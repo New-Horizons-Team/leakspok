@@ -104,10 +104,24 @@ func Email() Matcher {
 	return matchemail
 }
 
-// IP returns a matcher for identifying IP addresses
+// IP returns a matcher for identifying IPv4 and IPv6 addresses
 func IP() Matcher {
 	return Any(
 		matchipv4,
+		matchipv6,
+	)
+}
+
+// IPv4 returns a matcher for identifying IP addresses
+func IPv4() Matcher {
+	return Any(
+		matchipv4,
+	)
+}
+
+// IPv6 returns a matcher for identifying IPv6 addresses
+func IPv6() Matcher {
+	return Any(
 		matchipv6,
 	)
 }

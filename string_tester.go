@@ -120,7 +120,6 @@ func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
 						// Mask the first n characters of the substring
 						s = replaceFirstNCharsOfSubstring(s, x, rule.AnonymizeOptions.AnonymizeLength, rule.AnonymizeOptions.AnonymizeString)
 					}
-
 					hasFindings = true
 				}
 			}

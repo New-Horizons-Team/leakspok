@@ -101,8 +101,8 @@ func replaceFirstNCharsOfSubstring(original string, substring string, n int, rep
 	return original[:index] + strings.Repeat(replacement, n) + original[index+n:endIndex] + original[endIndex:]
 }
 
-// RedactFindings redacts all matches within the rules
-func (t *StringTester) RedactFindings(s string) (string, bool) {
+// AnonymizeFindings anonymizes all matches within the rules
+func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
 	matched := false
 	hasFindings := false
 

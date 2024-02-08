@@ -88,7 +88,7 @@ func redactPII(c *fiber.Ctx) error {
 	rules := createRuleSet()
 	t := leakspok.NewStringTester(rules)
 
-	result, hasFindings := t.RedactFindings(body.Data)
+	result, hasFindings := t.AnonymizeFindings(body.Data)
 
 	if !hasFindings {
 		return c.JSON(fiber.Map{

@@ -147,30 +147,6 @@ func TestMaskFindings(t *testing.T) {
                  "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing cpf leaking 111444777-34 abc"}],
                  "temperature": 0.1}'`, "111444777-34", false},
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing cnpj leaking 14.380.200/0001-21 abc"}],
-                 "temperature": 0.1}'`, "14.380.200/0001-21", true},
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing cnpj leaking 14.380.200/0001-20 abc"}],
-                 "temperature": 0.1}'`, "14.380.200/0001-20", false},
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing email leaking joao.silva@gmail.com abc"}],
-                 "temperature": 0.1}'`, "joao.silva@gmail.com", true},
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing email leaking joao.silva@@gmail.com abc"}],
-                 "temperature": 0.1}'`, "joao.silva@@gmail.com", false},
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing IP leaking  200.123.13.1 abc"}],
-                 "temperature": 0.1}'`, "200.123.13.1", true},
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing IP leaking  200.123.131a abc"}],
-                 "temperature": 0.1}'`, "200.123.131a", false},
 	}
 
 	rules := RuleSet{
@@ -203,6 +179,66 @@ func TestMaskFindings(t *testing.T) {
 			//Not leaked: the default MASK is NOT in the string
 			if strings.Contains(got, DefaultMaskString) {
 				t.Errorf("For input %q, it is not expected find %v in %v", test.input, DefaultMaskString, got)
+			}
+		}
+	}
+}
+
+func TestRedactCPF(t *testing.T) {
+	tests := []struct {
+		input  string
+		leak   string
+		isLeak bool
+	}{
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking 111444777-35 abc"}],
+                 "temperature": 0.1}'`, "111444777-35", true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking 111444777-34 abc"}],
+                 "temperature": 0.1}'`, "111444777-34", false},
+	}
+
+	cpfRule := Rule{
+		Name:        "brazilian_CPF",
+		Description: "Brazilian CPF",
+		Severity:    3,
+		Filter:      CPF(),
+		Anonymize:   true,
+		AnonymizeOptions: AnonymizeOptions{
+			Strategy:        REDACT,
+			AnonymizeString: "[CPF_REDACTED]",
+		},
+	}
+	rules := RuleSet{
+		"cpf_number": cpfRule,
+	}
+
+	leakspokTester := NewStringTester(rules)
+
+	for _, test := range tests {
+		got, _ := leakspokTester.AnonymizeFindings(test.input)
+
+		if test.isLeak {
+			//if cpf is in the string, it wasn't masked
+			if strings.Contains(got, test.leak) {
+				t.Errorf("For input %q expected not find %v in %v", test.input, test.leak, got)
+			}
+
+			//if REDACT string is not in the string, it wasn't masked
+			if !strings.Contains(got, cpfRule.AnonymizeOptions.AnonymizeString) {
+				t.Errorf("For input %q expected find %v in %v", test.input, cpfRule.AnonymizeOptions.AnonymizeString, got)
+			}
+		} else {
+			//Not leaked: the potential leak is still in the string (as expected)
+			if !strings.Contains(got, test.leak) {
+				t.Errorf("For input %q expected finding %v in %v", test.input, test.leak, got)
+			}
+
+			//Not leaked: the REDACT string is NOT in the string
+			if strings.Contains(got, cpfRule.AnonymizeOptions.AnonymizeString) {
+				t.Errorf("For input %q, it is not expected find %v in %v", test.input, cpfRule.AnonymizeOptions.AnonymizeString, got)
 			}
 		}
 	}

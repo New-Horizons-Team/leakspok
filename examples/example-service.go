@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/New-Horizons-Team/leakspok"
-	"github.com/gofiber/fiber/v2"
 	"log"
 	"strings"
+
+	"github.com/New-Horizons-Team/leakspok"
+	"github.com/gofiber/fiber/v2"
 )
 
+// RequestBody defines the structure of the request body
 type RequestBody struct {
 	Data string `json:"data"`
 }

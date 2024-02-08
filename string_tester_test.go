@@ -161,22 +161,22 @@ func TestMaskFindings(t *testing.T) {
 		got := leakspokTester.MaskFindings(test.input)
 
 		if test.isLeak {
-			//if cpf is in the string, it wasn't masked
+			// If cpf is in the string, it wasn't masked
 			if strings.Contains(got, test.leak) {
 				t.Errorf("For input %q expected not find %v in %v", test.input, test.leak, got)
 			}
 
-			//if default mask (<MASKED>) is not in the string, it wasn't masked
+			// If default mask (<MASKED>) is not in the string, it wasn't masked
 			if !strings.Contains(got, DefaultMaskString) {
 				t.Errorf("For input %q expected find %v in %v", test.input, DefaultMaskString, got)
 			}
 		} else {
-			//Not leaked: the potential leak is still in the string (as expected)
+			// Not leaked: the potential leak is still in the string (as expected)
 			if !strings.Contains(got, test.leak) {
 				t.Errorf("For input %q expected finding %v in %v", test.input, test.leak, got)
 			}
 
-			//Not leaked: the default MASK is NOT in the string
+			// Not leaked: the default MASK is NOT in the string
 			if strings.Contains(got, DefaultMaskString) {
 				t.Errorf("For input %q, it is not expected find %v in %v", test.input, DefaultMaskString, got)
 			}
@@ -221,22 +221,22 @@ func TestRedactCPF(t *testing.T) {
 		got, _ := leakspokTester.AnonymizeFindings(test.input)
 
 		if test.isLeak {
-			//if cpf is in the string, it wasn't masked
+			// If cpf is in the string, it wasn't masked
 			if strings.Contains(got, test.leak) {
 				t.Errorf("For input %q expected not find %v in %v", test.input, test.leak, got)
 			}
 
-			//if REDACT string is not in the string, it wasn't masked
+			// If REDACT string is not in the string, it wasn't masked
 			if !strings.Contains(got, cpfRule.AnonymizeOptions.AnonymizeString) {
 				t.Errorf("For input %q expected find %v in %v", test.input, cpfRule.AnonymizeOptions.AnonymizeString, got)
 			}
 		} else {
-			//Not leaked: the potential leak is still in the string (as expected)
+			// Not leaked: the potential leak is still in the string (as expected)
 			if !strings.Contains(got, test.leak) {
 				t.Errorf("For input %q expected finding %v in %v", test.input, test.leak, got)
 			}
 
-			//Not leaked: the REDACT string is NOT in the string
+			// Not leaked: the REDACT string is NOT in the string
 			if strings.Contains(got, cpfRule.AnonymizeOptions.AnonymizeString) {
 				t.Errorf("For input %q, it is not expected find %v in %v", test.input, cpfRule.AnonymizeOptions.AnonymizeString, got)
 			}

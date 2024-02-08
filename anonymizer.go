@@ -4,7 +4,9 @@ package leakspok
 type AnonymizeStrategy int
 
 const (
+	// REDACT is the strategy for redacting a finding
 	REDACT AnonymizeStrategy = iota
+	// MASK is the strategy for masking a finding
 	MASK
 )
 

@@ -54,38 +54,30 @@ const (
 
 // Compiled regular expressions
 var (
-	phoneRegexp           = regexp.MustCompile(phonePattern)
-	cpfRegexp             = regexp.MustCompile(cpfPattern)
-	cnpjRegexp            = regexp.MustCompile(cnpjPattern)
-	phonesWithExtsRegexp  = regexp.MustCompile(phonesWithExtsPattern)
-	linkRegexp            = regexp.MustCompile(linkPattern)
-	emailRegexp           = regexp.MustCompile(emailPattern)
-	ipv4Regexp            = regexp.MustCompile(ipv4Pattern)
-	ipv6Regexp            = regexp.MustCompile(ipv6Pattern)
-	ipRegexp              = regexp.MustCompile(ipPattern)
-	creditCardRegexp      = regexp.MustCompile(creditCardPattern)
-	creditCardBaseRegexp  = regexp.MustCompile(creditCardBasePattern)
-	streetAddressRegexp   = regexp.MustCompile(streetAddressPattern)
-	zipCodeRegexp         = regexp.MustCompile(zipCodePattern)
-	poBoxRegexp           = regexp.MustCompile(poBoxPattern)
-	ssnRegexp             = regexp.MustCompile(ssnPattern)
-	guidRegexp            = regexp.MustCompile(guidPattern)
-	visaCreditCardRegexp  = regexp.MustCompile(visaCreditCardPattern)
-	mcCreditCardRegexp    = regexp.MustCompile(mcCreditCardPattern)
-	altCreditCardRegexp   = regexp.MustCompile(creditCardAltPattern)
-	indiaPanRegexp        = regexp.MustCompile(indiaPanPattern)
-	ibanRegexp            = regexp.MustCompile(ibanPattern)
-	vinRegexp             = regexp.MustCompile(vinPattern)
-	uuidRegexp            = regexp.MustCompile(uuidPattern)
-	uuid3Regexp           = regexp.MustCompile(uuid3Pattern)
-	uuid4Regexp           = regexp.MustCompile(uuid4Pattern)
-	uuid5Regexp           = regexp.MustCompile(uuid5Pattern)
-	urlRegexp             = regexp.MustCompile(urlPattern)
-	filenameRegexp        = regexp.MustCompile(filenamePattern)
-	repeatingNumRegexp    = regexp.MustCompile(repeatingNumPattern)
-	beginsWithZeroRegexp  = regexp.MustCompile(beginWithZeroPattern)
-	containsLettersRegexp = regexp.MustCompile(containsLettersPattern)
-	containsSpacesRegexp  = regexp.MustCompile(containsSpacesPattern)
+	phoneRegexp          = regexp.MustCompile(phonePattern)
+	cpfRegexp            = regexp.MustCompile(cpfPattern)
+	cnpjRegexp           = regexp.MustCompile(cnpjPattern)
+	phonesWithExtsRegexp = regexp.MustCompile(phonesWithExtsPattern)
+	emailRegexp          = regexp.MustCompile(emailPattern)
+	ipv4Regexp           = regexp.MustCompile(ipv4Pattern)
+	ipv6Regexp           = regexp.MustCompile(ipv6Pattern)
+	ipRegexp             = regexp.MustCompile(ipPattern)
+	streetAddressRegexp  = regexp.MustCompile(streetAddressPattern)
+	zipCodeRegexp        = regexp.MustCompile(zipCodePattern)
+	poBoxRegexp          = regexp.MustCompile(poBoxPattern)
+	ssnRegexp            = regexp.MustCompile(ssnPattern)
+	guidRegexp           = regexp.MustCompile(guidPattern)
+	visaCreditCardRegexp = regexp.MustCompile(visaCreditCardPattern)
+	mcCreditCardRegexp   = regexp.MustCompile(mcCreditCardPattern)
+	ibanRegexp           = regexp.MustCompile(ibanPattern)
+	vinRegexp            = regexp.MustCompile(vinPattern)
+	uuidRegexp           = regexp.MustCompile(uuidPattern)
+	uuid3Regexp          = regexp.MustCompile(uuid3Pattern)
+	uuid4Regexp          = regexp.MustCompile(uuid4Pattern)
+	uuid5Regexp          = regexp.MustCompile(uuid5Pattern)
+	urlRegexp            = regexp.MustCompile(urlPattern)
+	filenameRegexp       = regexp.MustCompile(filenamePattern)
+	repeatingNumRegexp   = regexp.MustCompile(repeatingNumPattern)
 )
 
 func matchtestcreditcard(s string) bool {
@@ -110,10 +102,6 @@ func matchtestcreditcard(s string) bool {
 	}
 }
 
-func matchaltcreditcard(s string) bool {
-	return altCreditCardRegexp.MatchString(s)
-}
-
 func matchrepeatingnumber(s string) bool {
 	return repeatingNumRegexp.MatchString(s)
 }
@@ -128,10 +116,6 @@ func matchphone(s string) bool {
 
 func matchphonesWithExts(s string) bool {
 	return phonesWithExtsRegexp.MatchString(s)
-}
-
-func matchlink(s string) bool {
-	return linkRegexp.MatchString(s)
 }
 
 func matchemail(s string) bool {
@@ -158,10 +142,6 @@ func matchipv6(s string) bool {
 
 func matchip(s string) bool {
 	return ipRegexp.MatchString(s)
-}
-
-func matchCreditCard(s string) bool {
-	return creditCardRegexp.MatchString(s)
 }
 
 func matchVisaCreditCard(s string) bool {

@@ -143,7 +143,7 @@ func (t *StringTester) MaskFindings(s string) string {
 		}
 	}
 
-	//replace all matched words
+	// Replace all matched words
 	for _, word := range matchedWords {
 		s = strings.ReplaceAll(s, word, DefaultMaskString)
 	}

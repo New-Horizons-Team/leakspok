@@ -8,7 +8,6 @@ var (
 		"email_address": DefaultEmailRule,
 		"ip_address":    DefaultIPRule,
 		"credit_card":   DefaultCreditCardRule,
-		// "link":           DefaultLinkRule,
 	}
 
 	DefaultCPFRule = Rule{
@@ -56,3 +55,4 @@ var (
 
 // DefaultMaskString is used to mask matches. It's useful when should report leaks on security alerts
 var DefaultMaskString = "<MASKED>"
+var DefaultRedactString = "<REDACTED>"

@@ -83,11 +83,17 @@ func (t *StringTester) Find(s []string) (StringTesterResult, error) {
 	return testerResult, nil
 }
 
+// replaceFirstNCharsOfSubstring replaces the first n characters of a substring with a replacement string
 func replaceFirstNCharsOfSubstring(original string, substring string, n int, replacement string) string {
 	index := strings.Index(original, substring)
 	if index == -1 {
 		// Substring not found
 		return original
+	}
+
+	if n > len(substring) {
+		// Limit n to the length of the substring
+		n = len(substring)
 	}
 
 	// Calculate the end index of the substring
@@ -116,7 +122,7 @@ func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
 						s = strings.ReplaceAll(s, x, rule.AnonymizeOptions.AnonymizeString)
 					}
 					// MASK second
-					if rule.AnonymizeOptions.Strategy == MASK && len(x) > rule.AnonymizeOptions.AnonymizeLength {
+					if rule.AnonymizeOptions.Strategy == MASK {
 						// Mask the first n characters of the substring
 						s = replaceFirstNCharsOfSubstring(s, x, rule.AnonymizeOptions.AnonymizeLength, rule.AnonymizeOptions.AnonymizeString)
 					}

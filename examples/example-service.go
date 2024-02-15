@@ -59,7 +59,7 @@ func createRuleSet() leakspok.RuleSet {
 		AnonymizeOptions: leakspok.AnonymizeOptions{
 			Strategy:        leakspok.MASK,
 			AnonymizeString: "*",
-			AnonymizeLength: 3,
+			AnonymizeLength: 10,
 		},
 	}
 

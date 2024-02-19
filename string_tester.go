@@ -83,6 +83,58 @@ func (t *StringTester) Find(s []string) (StringTesterResult, error) {
 	return testerResult, nil
 }
 
+// replaceFirstNCharsOfSubstring replaces the first n characters of a substring with a replacement string
+func replaceFirstNCharsOfSubstring(original string, substring string, n int, replacement string) string {
+	index := strings.Index(original, substring)
+	if index == -1 {
+		// Substring not found
+		return original
+	}
+
+	if n > len(substring) {
+		// Limit n to the length of the substring
+		n = len(substring)
+	}
+
+	// Calculate the end index of the substring
+	endIndex := index + len(substring)
+	if n > len(substring) {
+		// Limit n to the length of the substring
+		n = len(substring)
+	}
+
+	// Concatenate the parts: before the substring, modified substring, and after the substring
+	return original[:index] + strings.Repeat(replacement, n) + original[index+n:endIndex] + original[endIndex:]
+}
+
+// AnonymizeFindings anonymizes all matches within the rules
+func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
+	matched := false
+	hasFindings := false
+
+	for _, rule := range t.Rules {
+		for _, x := range strings.Fields(s) {
+			matched = rule.Filter(x)
+			if matched {
+				if rule.Anonymize {
+					// REDACT first
+					if rule.AnonymizeOptions.Strategy == REDACT {
+						s = strings.ReplaceAll(s, x, rule.AnonymizeOptions.AnonymizeString)
+					}
+					// MASK second
+					if rule.AnonymizeOptions.Strategy == MASK {
+						// Mask the first n characters of the substring
+						s = replaceFirstNCharsOfSubstring(s, x, rule.AnonymizeOptions.AnonymizeLength, rule.AnonymizeOptions.AnonymizeString)
+					}
+					hasFindings = true
+				}
+			}
+		}
+	}
+
+	return s, hasFindings
+}
+
 // MaskFindings masks all matches within the rules
 func (t *StringTester) MaskFindings(s string) string {
 	matched := false
@@ -97,7 +149,7 @@ func (t *StringTester) MaskFindings(s string) string {
 		}
 	}
 
-	//replace all matched words
+	// Replace all matched words
 	for _, word := range matchedWords {
 		s = strings.ReplaceAll(s, word, DefaultMaskString)
 	}

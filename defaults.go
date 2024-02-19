@@ -8,9 +8,9 @@ var (
 		"email_address": DefaultEmailRule,
 		"ip_address":    DefaultIPRule,
 		"credit_card":   DefaultCreditCardRule,
-		// "link":           DefaultLinkRule,
 	}
 
+	// DefaultCPFRule is a default rule for Brazilian CPF
 	DefaultCPFRule = Rule{
 		Name:        "brazilian_CPF",
 		Description: "Brazilian CPF",
@@ -18,6 +18,7 @@ var (
 		Filter:      CPF(),
 	}
 
+	// DefaultCNPJRule is a default rule for Brazilian CNPJ
 	DefaultCNPJRule = Rule{
 		Name:        "brazilian_CNPJ",
 		Description: "Brazilian CNPJ",
@@ -25,13 +26,7 @@ var (
 		Filter:      CNPJ(),
 	}
 
-	DefaultLinkRule = Rule{
-		Name:        "link",
-		Description: "link or URL",
-		Severity:    1,
-		Filter:      Link(),
-	}
-
+	// DefaultEmailRule is a default rule for email address
 	DefaultEmailRule = Rule{
 		Name:        "email_address",
 		Description: "valid email address",
@@ -39,6 +34,7 @@ var (
 		Filter:      Email(),
 	}
 
+	// DefaultIPRule is a default rule for IP address
 	DefaultIPRule = Rule{
 		Name:        "ip_address",
 		Description: "valid IPv4 address",
@@ -46,6 +42,7 @@ var (
 		Filter:      IPv4(),
 	}
 
+	// DefaultCreditCardRule is a default rule for credit card number
 	DefaultCreditCardRule = Rule{
 		Name:        "credit_card",
 		Description: "valid credit card number",
@@ -56,3 +53,6 @@ var (
 
 // DefaultMaskString is used to mask matches. It's useful when should report leaks on security alerts
 var DefaultMaskString = "<MASKED>"
+
+// DefaultRedactString is used to redact matches. It's useful when should report leaks on security alerts
+var DefaultRedactString = "<REDACTED>"

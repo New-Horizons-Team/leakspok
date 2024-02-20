@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"unicode/utf8"
 )
 
 // StringTesterResult must sync with the DefaultRuleSet
@@ -107,18 +108,32 @@ func replaceFirstNCharsOfSubstring(original string, substring string, n int, rep
 	return original[:index] + strings.Repeat(replacement, n) + original[index+n:endIndex] + original[endIndex:]
 }
 
+// ensureNoTrailingCommonChars removes trailing common characters from a string
 func ensureNoTrailingCommonChars(s string) string {
+	trailingChars := map[rune]bool{
+		'.': true, ',': true, '?': true, '!': true,
+		':': true, ';': true, '-': true, '_': true,
+		')': true, ']': true, '}': true, '>': true, '$': true,
+	}
+
 	for len(s) > 0 {
-		lastChar := s[len(s)-1:]
-		if lastChar == "." || lastChar == "," || lastChar == "?" || lastChar == "!" ||
-			lastChar == ":" || lastChar == ";" || lastChar == "-" || lastChar == "_" ||
-			lastChar == ")" || lastChar == "]" || lastChar == "}" || lastChar == ">" || lastChar == "$" {
-			s = s[:len(s)-1]
+		lastRune, size := getLastRune(s)
+		if trailingChars[lastRune] {
+			s = s[:len(s)-size]
 		} else {
 			break
 		}
 	}
 	return s
+}
+
+// getLastRune returns the last rune in a string and its size
+func getLastRune(s string) (rune, int) {
+	r, size := rune(s[len(s)-1]), 1
+	if r >= utf8.RuneSelf {
+		return utf8.DecodeLastRuneInString(s)
+	}
+	return r, size
 }
 
 // AnonymizeFindings anonymizes all matches within the rules

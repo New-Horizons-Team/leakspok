@@ -20,9 +20,10 @@ func main() {
 
 	// Routes
 	app.Get("/", hello)
-	// curl  -X POST http://127.0.0.1:3000/check_pii -H "Content-Type: application/json" -d '{"data": "PIIXXXXXX"}'
+	// curl  -X POST http://127.0.0.1:3000/redact_pii -H "Content-Type: application/json" -d '{"data": "MY PII string"}'
 	app.Post("/redact_pii", redactPII)
 
+	// curl  -X POST http://127.0.0.1:3000/check_pii -H "Content-Type: application/json" -d '{"data": "PIIXXXXXX"}'
 	app.Post("/check_pii", checkPII)
 
 	// Start server

@@ -34,6 +34,10 @@ func TestFindCPF(t *testing.T) {
                  "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing cpf leaking 111444777-31"}],
                  "temperature": 0.1}'`, false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking 111.444.77735, xpto"}],
+                 "temperature": 0.1}'`, true},
 	}
 
 	rules := RuleSet{
@@ -135,21 +139,6 @@ func TestFindIP(t *testing.T) {
 
 // TestRedactCPF tests the redaction of CPF numbers
 func TestRedactCPF(t *testing.T) {
-	tests := []struct {
-		input  string
-		leak   string
-		isLeak bool
-	}{
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing cpf leaking 111444777-35 abc"}],
-                 "temperature": 0.1}'`, "111444777-35", true},
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing cpf leaking 111444777-34 abc"}],
-                 "temperature": 0.1}'`, "111444777-34", false},
-	}
-
 	cpfRule := Rule{
 		Name:        "brazilian_CPF",
 		Description: "Brazilian CPF",
@@ -165,6 +154,29 @@ func TestRedactCPF(t *testing.T) {
 		"cpf_number": cpfRule,
 	}
 
+	tests := []struct {
+		input    string
+		expected string
+		isLeak   bool
+	}{
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking 111444777-35 abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking ` + cpfRule.AnonymizeOptions.AnonymizeString + ` abc"}],
+                 "temperature": 0.1}'`, true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking 111444777-35, abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking ` + cpfRule.AnonymizeOptions.AnonymizeString + `, abc"}],
+                 "temperature": 0.1}'`, true},
+	}
+
 	leakspokTester := NewStringTester(rules)
 
 	for _, test := range tests {
@@ -172,8 +184,8 @@ func TestRedactCPF(t *testing.T) {
 
 		if test.isLeak {
 			// If cpf is in the string, it wasn't masked
-			if strings.Contains(got, test.leak) {
-				t.Errorf("For input %q expected not find %v in %v", test.input, test.leak, got)
+			if got != test.expected {
+				t.Errorf("For input %q expected not find %v in %v", test.input, test.expected, got)
 			}
 
 			// If REDACT string is not in the string, it wasn't masked
@@ -182,11 +194,11 @@ func TestRedactCPF(t *testing.T) {
 			}
 		} else {
 			// Not leaked: the potential leak is still in the string (as expected)
-			if !strings.Contains(got, test.leak) {
-				t.Errorf("For input %q expected finding %v in %v", test.input, test.leak, got)
+			if got != test.expected {
+				t.Errorf("For input %q expected finding %v in %v", test.input, test.expected, got)
 			}
 
-			// Not leaked: the REDACT string is NOT in the string
+			// Not leaked: the REDACT string is in the string (not expected)
 			if strings.Contains(got, cpfRule.AnonymizeOptions.AnonymizeString) {
 				t.Errorf("For input %q, it is not expected find %v in %v", test.input, cpfRule.AnonymizeOptions.AnonymizeString, got)
 			}

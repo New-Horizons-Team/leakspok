@@ -107,6 +107,20 @@ func replaceFirstNCharsOfSubstring(original string, substring string, n int, rep
 	return original[:index] + strings.Repeat(replacement, n) + original[index+n:endIndex] + original[endIndex:]
 }
 
+func ensureNoTrailingCommonChars(s string) string {
+	for len(s) > 0 {
+		lastChar := s[len(s)-1:]
+		if lastChar == "." || lastChar == "," || lastChar == "?" || lastChar == "!" ||
+			lastChar == ":" || lastChar == ";" || lastChar == "-" || lastChar == "_" ||
+			lastChar == ")" || lastChar == "]" || lastChar == "}" || lastChar == ">" || lastChar == "$" {
+			s = s[:len(s)-1]
+		} else {
+			break
+		}
+	}
+	return s
+}
+
 // AnonymizeFindings anonymizes all matches within the rules
 func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
 	matched := false
@@ -116,6 +130,9 @@ func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
 		for _, x := range strings.Fields(s) {
 			matched = rule.Filter(x)
 			if matched {
+				// Bugfix: if matched, we need to remove comma, dot or other common chars from the string
+				x = ensureNoTrailingCommonChars(x)
+
 				if rule.Anonymize {
 					// REDACT first
 					if rule.AnonymizeOptions.Strategy == REDACT {

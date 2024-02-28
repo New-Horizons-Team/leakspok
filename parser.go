@@ -27,7 +27,6 @@ const (
 	zipCodePattern         = `\b\d{5}(?:[- ]\d{4})?\b`
 	poBoxPattern           = `(?i)P\.? ?O\.? Box \d+`
 	ssnPattern             = `\b\d{3}[- ]\d{2}[- ]\d{4}`
-	indiaPanPattern        = `^[A-Z]{3}[ABCFGHLJPT]{1}[A-Z]{1}[0-9]{4}[A-Z]{1}$`
 	guidPattern            = `[0-9a-fA-F]{8}-?[a-fA-F0-9]{4}-?[a-fA-F0-9]{4}-?[a-fA-F0-9]{4}-?[a-fA-F0-9]{12}`
 	ibanPattern            = `(?i)[a-zA-Z]{2}[0-9]{2}[\t\f ]?[a-zA-Z0-9]{4}[\t\f ]?[0-9]{4}[\t\f ]?[0-9]{3}([a-zA-Z0-9][\t\f ]?[a-zA-Z0-9]{0,4}[\t\f ]?[a-zA-Z0-9]{0,4}[\t\f ]?[a-zA-Z0-9]{0,4}[\t\f ]?[a-zA-Z0-9]{0,3})?`
 	vinPattern             = `[A-HJ-NPR-Z\d]{3}[A-HJ-NPR-Z\d]{5}[\dX][A-HJ-NPR-Z\d][A-HJ-NPR-Z\d][A-HJ-NPR-Z\d]{6}`
@@ -123,7 +122,7 @@ func matchemail(s string) bool {
 }
 
 func matchipv4(s string) bool {
-	replacer := strings.NewReplacer(`"`, "", `,`, "", `]`, "", `}`, "", `-`, "")
+	replacer := strings.NewReplacer(`"`, "", `,`, "", `]`, "", `}`, "", `-`, "", `;`, "", `?`, "", `!`, "")
 	s = replacer.Replace(s)
 
 	if ipv4Regexp.MatchString(s) {
@@ -203,7 +202,7 @@ func matchurl(s string) bool {
 // matchCPF returns a Brazilian CPF match
 func matchCPF(s string) bool {
 
-	replacer := strings.NewReplacer(`"`, "", `,`, "", `]`, "", `}`, "", `.`, "", `-`, "")
+	replacer := strings.NewReplacer(`"`, "", `,`, "", `]`, "", `}`, "", `.`, "", `-`, "", `!`, "", `?`, "")
 	s = replacer.Replace(s)
 
 	if len(s) != 11 {
@@ -249,7 +248,7 @@ func matchCPF(s string) bool {
 // matchCNPJ returns a Brazilian CNPJ match
 func matchCNPJ(s string) bool {
 
-	replacer := strings.NewReplacer(`"`, "", `,`, "", `]`, "", `}`, "", `.`, "", `-`, "", `\`, "", `/`, "")
+	replacer := strings.NewReplacer(`"`, "", `,`, "", `]`, "", `}`, "", `.`, "", `-`, "", `\`, "", `/`, "", `!`, "", `?`, "")
 	s = replacer.Replace(s)
 
 	// A valid CNPJ must have 14 digits without punctuations

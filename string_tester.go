@@ -3,6 +3,7 @@ package leakspok
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -107,6 +108,15 @@ func replaceFirstNCharsOfSubstring(original string, substring string, n int, rep
 	return original[:index] + strings.Repeat(replacement, n) + original[index+n:endIndex] + original[endIndex:]
 }
 
+// removePunctuation removes punctuation from a string
+func removePunctuation(text string) string {
+	// Compile the regular expression
+	re := regexp.MustCompile(`^[\.,:;!?\(\)]+|[\.,:;!?\(\)]+$`)
+
+	return re.ReplaceAllString(text, "")
+
+}
+
 // AnonymizeFindings anonymizes all matches within the rules
 func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
 	matched := false
@@ -116,6 +126,9 @@ func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
 		for _, x := range strings.Fields(s) {
 			matched = rule.Filter(x)
 			if matched {
+				// Bugfix: if matched, we need to remove comma, dot or other common chars from the string
+				x = removePunctuation(x)
+
 				if rule.Anonymize {
 					// REDACT first
 					if rule.AnonymizeOptions.Strategy == REDACT {

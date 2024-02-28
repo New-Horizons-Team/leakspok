@@ -58,9 +58,8 @@ func createRuleSet() leakspok.RuleSet {
 		Filter:      leakspok.Email(),
 		Anonymize:   true,
 		AnonymizeOptions: leakspok.AnonymizeOptions{
-			Strategy:        leakspok.MASK,
-			AnonymizeString: "*",
-			AnonymizeLength: 10,
+			Strategy:        leakspok.REDACT,
+			AnonymizeString: "[EMAIL_REDACTED]",
 		},
 	}
 

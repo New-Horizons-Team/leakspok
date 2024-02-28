@@ -3,8 +3,8 @@ package leakspok
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
-	"unicode/utf8"
 )
 
 // StringTesterResult must sync with the DefaultRuleSet
@@ -108,32 +108,13 @@ func replaceFirstNCharsOfSubstring(original string, substring string, n int, rep
 	return original[:index] + strings.Repeat(replacement, n) + original[index+n:endIndex] + original[endIndex:]
 }
 
-// ensureNoTrailingCommonChars removes trailing common characters from a string
-func ensureNoTrailingCommonChars(s string) string {
-	trailingChars := map[rune]bool{
-		'.': true, ',': true, '?': true, '!': true,
-		':': true, ';': true, '-': true, '_': true,
-		')': true, ']': true, '}': true, '>': true, '$': true,
-	}
+// removePunctuation removes punctuation from a string
+func removePunctuation(text string) string {
+	// Compile the regular expression
+	re := regexp.MustCompile(`^[\.,:;!?\(\)]+|[\.,:;!?\(\)]+$`)
 
-	for len(s) > 0 {
-		lastRune, size := getLastRune(s)
-		if trailingChars[lastRune] {
-			s = s[:len(s)-size]
-		} else {
-			break
-		}
-	}
-	return s
-}
+	return re.ReplaceAllString(text, "")
 
-// getLastRune returns the last rune in a string and its size
-func getLastRune(s string) (rune, int) {
-	r, size := rune(s[len(s)-1]), 1
-	if r >= utf8.RuneSelf {
-		return utf8.DecodeLastRuneInString(s)
-	}
-	return r, size
 }
 
 // AnonymizeFindings anonymizes all matches within the rules
@@ -146,7 +127,7 @@ func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
 			matched = rule.Filter(x)
 			if matched {
 				// Bugfix: if matched, we need to remove comma, dot or other common chars from the string
-				x = ensureNoTrailingCommonChars(x)
+				x = removePunctuation(x)
 
 				if rule.Anonymize {
 					// REDACT first

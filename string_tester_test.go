@@ -166,15 +166,26 @@ func TestRedactCPF(t *testing.T) {
 			`'{
                  "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing cpf leaking ` + cpfRule.AnonymizeOptions.AnonymizeString + ` abc"}],
-                 "temperature": 0.1}'`, true},
+                 "temperature": 0.1}'`,
+			true},
 		{`'{
                  "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing cpf leaking 111444777-35, abc"}],
+                 "messages": [{"role": "user", "content": "testing cpf leaking ,,,,111444777-35,,,,, abc"}],
                  "temperature": 0.1}'`,
 			`'{
                  "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing cpf leaking ` + cpfRule.AnonymizeOptions.AnonymizeString + `, abc"}],
-                 "temperature": 0.1}'`, true},
+                 "messages": [{"role": "user", "content": "testing cpf leaking ,,,,` + cpfRule.AnonymizeOptions.AnonymizeString + `,,,,, abc"}],
+                 "temperature": 0.1}'`,
+			true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking ,,,,111444777-351,,,,, abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking ,,,,111444777-351,,,,, abc"}],
+                 "temperature": 0.1}'`,
+			false},
 	}
 
 	leakspokTester := NewStringTester(rules)
@@ -208,25 +219,6 @@ func TestRedactCPF(t *testing.T) {
 
 // TestRedactEmail tests the redaction of email addresses
 func TestRedactEmail(t *testing.T) {
-	tests := []struct {
-		input  string
-		leak   string
-		isLeak bool
-	}{
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing email leaking joao.silva@gmail.com abc"}],
-                 "temperature": 0.1}'`, "joao.silva@gmail.com", true},
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing email leaking j@e.com abc"}],
-                 "temperature": 0.1}'`, " j@e.com", true},
-		{`'{
-	 			"model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing email leaking joao.silva@mail.com.br abc"}],
-                 "temperature": 0.1}'`, " joao.silva@mail.com.br", true},
-	}
-
 	emailRule := Rule{
 		Name:        "email_address",
 		Description: "Email Address",
@@ -242,6 +234,63 @@ func TestRedactEmail(t *testing.T) {
 		"email_address": emailRule,
 	}
 
+	tests := []struct {
+		input    string
+		expected string
+		isLeak   bool
+	}{
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking joao.silva@gmail.com abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking ` + emailRule.AnonymizeOptions.AnonymizeString + ` abc"}],
+                 "temperature": 0.1}'`,
+			true,
+		},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking joao.silva@gmail.com, abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking ` + emailRule.AnonymizeOptions.AnonymizeString + `, abc"}],
+                 "temperature": 0.1}'`,
+			true,
+		},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking ,joao.silva@gmail.com,,,,!!!! abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking ,` + emailRule.AnonymizeOptions.AnonymizeString + `,,,,!!!! abc"}],
+                 "temperature": 0.1}'`,
+			true,
+		},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking ,!!!;!?????joao@teste.br,,,,!!!!????? abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking ,!!!;!?????` + emailRule.AnonymizeOptions.AnonymizeString + `,,,,!!!!????? abc"}],
+                 "temperature": 0.1}'`,
+			true,
+		},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking ,!!!;!?????joao@teste,,,,!!!!????? abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking ,!!!;!?????joao@teste,,,,!!!!????? abc"}],
+                 "temperature": 0.1}'`,
+			false,
+		},
+	}
+
 	leakspokTester := NewStringTester(rules)
 
 	for _, test := range tests {
@@ -249,8 +298,8 @@ func TestRedactEmail(t *testing.T) {
 
 		if test.isLeak {
 			// If cpf is in the string, it wasn't masked
-			if strings.Contains(got, test.leak) {
-				t.Errorf("For input %q expected not find %v in %v", test.input, test.leak, got)
+			if got != test.expected {
+				t.Errorf("For input %q expected not find %v in %v", test.input, test.expected, got)
 			}
 
 			// If REDACT string is not in the string, it wasn't masked
@@ -259,11 +308,11 @@ func TestRedactEmail(t *testing.T) {
 			}
 		} else {
 			// Not leaked: the potential leak is still in the string (as expected)
-			if !strings.Contains(got, test.leak) {
-				t.Errorf("For input %q expected finding %v in %v", test.input, test.leak, got)
+			if got != test.expected {
+				t.Errorf("For input %q expected finding %v in %v", test.input, test.expected, got)
 			}
 
-			// Not leaked: the REDACT string is NOT in the string
+			// Not leaked: the REDACT string is in the string (not expected)
 			if strings.Contains(got, emailRule.AnonymizeOptions.AnonymizeString) {
 				t.Errorf("For input %q, it is not expected find %v in %v", test.input, emailRule.AnonymizeOptions.AnonymizeString, got)
 			}
@@ -273,30 +322,11 @@ func TestRedactEmail(t *testing.T) {
 
 // TestRedactIPAddress tests the redaction of IP addresses
 func TestRedactIPAddress(t *testing.T) {
-	tests := []struct {
-		input  string
-		leak   string
-		isLeak bool
-	}{
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing IP address leaking 180.112.90.22 abc"}],
-                 "temperature": 0.1}'`, "180.112.90.22", true},
-		{`'{
-                 "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing IP address leaking 1.1.1.1 abc"}],
-                 "temperature": 0.1}'`, "1.1.1.1", true},
-		{`'{
-	 			"model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing IP address leaking 200.123.2.289 abc"}],
-                 "temperature": 0.1}'`, "200.123.2.289", false},
-	}
-
 	ipRule := Rule{
-		Name:        "email_address",
-		Description: "Email Address",
+		Name:        "ip_address",
+		Description: "IP Address",
 		Severity:    3,
-		Filter:      IP(),
+		Filter:      IPv4(),
 		Anonymize:   true,
 		AnonymizeOptions: AnonymizeOptions{
 			Strategy:        REDACT,
@@ -307,6 +337,49 @@ func TestRedactIPAddress(t *testing.T) {
 		"ip_address": ipRule,
 	}
 
+	tests := []struct {
+		input    string
+		expected string
+		isLeak   bool
+	}{
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking 180.112.90.22 abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking ` + ipRule.AnonymizeOptions.AnonymizeString + ` abc"}],
+                 "temperature": 0.1}'`,
+			true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking ,180.112.90.22,, abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking ,` + ipRule.AnonymizeOptions.AnonymizeString + `,, abc"}],
+                 "temperature": 0.1}'`,
+			true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking ,????????;;180.112.90.22,????, abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking ,????????;;` + ipRule.AnonymizeOptions.AnonymizeString + `,????, abc"}],
+                 "temperature": 0.1}'`,
+			true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking ,????????;;999.112.90.999,::????, abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking ,????????;;999.112.90.999,::????, abc"}],
+                 "temperature": 0.1}'`,
+			false},
+	}
+
 	leakspokTester := NewStringTester(rules)
 
 	for _, test := range tests {
@@ -314,8 +387,8 @@ func TestRedactIPAddress(t *testing.T) {
 
 		if test.isLeak {
 			// If cpf is in the string, it wasn't masked
-			if strings.Contains(got, test.leak) {
-				t.Errorf("For input %q expected not find %v in %v", test.input, test.leak, got)
+			if got != test.expected {
+				t.Errorf("For input %q expected not find %v in %v", test.input, test.expected, got)
 			}
 
 			// If REDACT string is not in the string, it wasn't masked
@@ -324,11 +397,11 @@ func TestRedactIPAddress(t *testing.T) {
 			}
 		} else {
 			// Not leaked: the potential leak is still in the string (as expected)
-			if !strings.Contains(got, test.leak) {
-				t.Errorf("For input %q expected finding %v in %v", test.input, test.leak, got)
+			if got != test.expected {
+				t.Errorf("For input %q expected finding %v in %v", test.input, test.expected, got)
 			}
 
-			// Not leaked: the REDACT string is NOT in the string
+			// Not leaked: the REDACT string is in the string (not expected)
 			if strings.Contains(got, ipRule.AnonymizeOptions.AnonymizeString) {
 				t.Errorf("For input %q, it is not expected find %v in %v", test.input, ipRule.AnonymizeOptions.AnonymizeString, got)
 			}

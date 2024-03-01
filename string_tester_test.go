@@ -161,11 +161,11 @@ func TestRedactCPF(t *testing.T) {
 	}{
 		{`'{
                  "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing cpf leaking 111444777-35 abc"}],
+                 "messages": [{"role": "user", "content": "testing cpf leaking '111444777-35" abc"}],
                  "temperature": 0.1}'`,
 			`'{
                  "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing cpf leaking ` + cpfRule.AnonymizeOptions.AnonymizeString + ` abc"}],
+                 "messages": [{"role": "user", "content": "testing cpf leaking '` + cpfRule.AnonymizeOptions.AnonymizeString + `" abc"}],
                  "temperature": 0.1}'`,
 			true},
 		{`'{
@@ -175,6 +175,24 @@ func TestRedactCPF(t *testing.T) {
 			`'{
                  "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing cpf leaking ,,,,` + cpfRule.AnonymizeOptions.AnonymizeString + `,,,,, abc"}],
+                 "temperature": 0.1}'`,
+			true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking ,,,,111444777-35"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking ,,,,` + cpfRule.AnonymizeOptions.AnonymizeString + `"}],
+                 "temperature": 0.1}'`,
+			true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking ,,,,111444777-35'"],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing cpf leaking ,,,,` + cpfRule.AnonymizeOptions.AnonymizeString + `'"],
                  "temperature": 0.1}'`,
 			true},
 		{`'{
@@ -251,6 +269,16 @@ func TestRedactEmail(t *testing.T) {
 		},
 		{`'{
                  "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking 'joao.silva@gmail.com"" abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking '` + emailRule.AnonymizeOptions.AnonymizeString + `"" abc"}],
+                 "temperature": 0.1}'`,
+			true,
+		},
+		{`'{
+                 "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing email leaking joao.silva@gmail.com, abc"}],
                  "temperature": 0.1}'`,
 			`'{
@@ -276,6 +304,16 @@ func TestRedactEmail(t *testing.T) {
 			`'{
                  "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing email leaking ,!!!;!?????` + emailRule.AnonymizeOptions.AnonymizeString + `,,,,!!!!????? abc"}],
+                 "temperature": 0.1}'`,
+			true,
+		},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking '}joao@teste.br"{} abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking '}` + emailRule.AnonymizeOptions.AnonymizeString + `"{} abc"}],
                  "temperature": 0.1}'`,
 			true,
 		},
@@ -362,11 +400,29 @@ func TestRedactIPAddress(t *testing.T) {
 			true},
 		{`'{
                  "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking ,'180.112.90.22"{ abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking ,'` + ipRule.AnonymizeOptions.AnonymizeString + `"{ abc"}],
+                 "temperature": 0.1}'`,
+			true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing IP address leaking ,????????;;180.112.90.22,????, abc"}],
                  "temperature": 0.1}'`,
 			`'{
                  "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing IP address leaking ,????????;;` + ipRule.AnonymizeOptions.AnonymizeString + `,????, abc"}],
+                 "temperature": 0.1}'`,
+			true},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking ,????????;;180.112.90.22"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking ,????????;;` + ipRule.AnonymizeOptions.AnonymizeString + `"}],
                  "temperature": 0.1}'`,
 			true},
 		{`'{

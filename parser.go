@@ -122,7 +122,8 @@ func matchemail(s string) bool {
 }
 
 func matchipv4(s string) bool {
-	replacer := strings.NewReplacer(`"`, "", `,`, "", `]`, "", `}`, "", `-`, "", `;`, "", `?`, "", `!`, "")
+	replacer := strings.NewReplacer(`"`, "", `,`, "", `[`, "", `]`, "", `{`, "", `}`, "", `-`, "", `;`, "", `?`,
+		"", `!`, "", "`", "", "'", "")
 	s = replacer.Replace(s)
 
 	if ipv4Regexp.MatchString(s) {
@@ -202,7 +203,8 @@ func matchurl(s string) bool {
 // matchCPF returns a Brazilian CPF match
 func matchCPF(s string) bool {
 
-	replacer := strings.NewReplacer(`"`, "", `,`, "", `]`, "", `}`, "", `.`, "", `-`, "", `!`, "", `?`, "")
+	replacer := strings.NewReplacer(`"`, "", `,`, "", `[`, "", `]`, "", `{`, "", `}`, "", `.`, "", `-`, "",
+		`!`, "", `?`, "", "`", "", "'", "")
 	s = replacer.Replace(s)
 
 	if len(s) != 11 {

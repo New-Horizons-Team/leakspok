@@ -111,7 +111,7 @@ func replaceFirstNCharsOfSubstring(original string, substring string, n int, rep
 // removePunctuation removes punctuation from a string
 func removePunctuation(text string) string {
 	// Compile the regular expression
-	re := regexp.MustCompile(`^[\.,:;!?\(\)]+|[\.,:;!?\(\)]+$`)
+	re := regexp.MustCompile(`^["'\[\]\{\}\.,:;!?\(\)]+|["'\[\]\{\}\.,:;!?\(\)]+$`)
 
 	return re.ReplaceAllString(text, "")
 

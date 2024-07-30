@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"unicode"
 )
 
 // StringTesterResult must sync with the DefaultRuleSet
@@ -117,13 +118,21 @@ func removePunctuation(text string) string {
 
 }
 
+// customFields splits a string into fields based on custom delimiters
+func customFields(s string) []string {
+	return strings.FieldsFunc(s, func(r rune) bool {
+		return unicode.IsSpace(r) || r == ',' || r == ';' || r == '!' || r == '?' || r == '(' || r == ')' ||
+			r == '[' || r == ']' || r == '{' || r == '}' || r == '"' || r == '\''
+	})
+}
+
 // AnonymizeFindings anonymizes all matches within the rules
 func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
 	matched := false
 	hasFindings := false
 
 	for _, rule := range t.Rules {
-		for _, x := range strings.Fields(s) {
+		for _, x := range customFields(s) {
 			matched = rule.Filter(x)
 			if matched {
 				// Bugfix: if matched, we need to remove comma, dot or other common chars from the string

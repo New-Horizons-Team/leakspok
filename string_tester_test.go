@@ -204,6 +204,15 @@ func TestRedactCPF(t *testing.T) {
                  "messages": [{"role": "user", "content": "testing cpf leaking ,,,,111444777-351,,,,, abc"}],
                  "temperature": 0.1}'`,
 			false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"content": "Say this: my cpf is 383.413.710-30"}"role": "user"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"content": "Say this: my cpf is ` + cpfRule.AnonymizeOptions.AnonymizeString + `"}"role": "user"}],
+                 "temperature": 0.1}'`,
+			true},
 	}
 
 	leakspokTester := NewStringTester(rules)
@@ -327,6 +336,16 @@ func TestRedactEmail(t *testing.T) {
                  "temperature": 0.1}'`,
 			false,
 		},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking,joao.test@gmail.com "}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing email leaking,` + emailRule.AnonymizeOptions.AnonymizeString + ` "}],
+                 "temperature": 0.1}'`,
+			true,
+		},
 	}
 
 	leakspokTester := NewStringTester(rules)
@@ -434,6 +453,15 @@ func TestRedactIPAddress(t *testing.T) {
                  "messages": [{"role": "user", "content": "testing IP address leaking ,????????;;999.112.90.999,::????, abc"}],
                  "temperature": 0.1}'`,
 			false},
+		{`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking,180.112.90.22 abc"}],
+                 "temperature": 0.1}'`,
+			`'{
+                 "model": "gpt-3.5-turbo",
+                 "messages": [{"role": "user", "content": "testing IP address leaking,` + ipRule.AnonymizeOptions.AnonymizeString + ` abc"}],
+                 "temperature": 0.1}'`,
+			true},
 	}
 
 	leakspokTester := NewStringTester(rules)

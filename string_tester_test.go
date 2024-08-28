@@ -159,6 +159,20 @@ func TestRedactCPF(t *testing.T) {
 		expected string
 		isLeak   bool
 	}{
+		{`" \\216.187.210-97\\\"\\n\"}]"`,
+			`" \\` + cpfRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}]"`,
+			true},
+		{`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\"216.187.210-97\\\"\\n\"}], \"temperature\": 0.7}"`,
+			`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\"` +
+				cpfRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}], \"temperature\": 0.7}"`,
+			true},
+		{`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\\"216.187.210-97\\\"\\n\"}], \"temperature\": 0.7}"`,
+			`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\\"` +
+				cpfRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}], \"temperature\": 0.7}"`,
+			true},
+		{`"Unable to access the notebook "/Workspace/Users "216.187.210-97" stocks_information"`,
+			`"Unable to access the notebook "/Workspace/Users "` + cpfRule.AnonymizeOptions.AnonymizeString + `" stocks_information"`,
+			true},
 		{`'{
                  "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing cpf leaking '111444777-35" abc"}],
@@ -266,13 +280,23 @@ func TestRedactEmail(t *testing.T) {
 		expected string
 		isLeak   bool
 	}{
+		{`Unable to access the notebook "/Workspace/Users/"wolney.barreto@ifood.com.br"/stocks_information"`,
+			`Unable to access the notebook "/Workspace/Users/"` + emailRule.AnonymizeOptions.AnonymizeString +
+				`"/stocks_information"`,
+			true,
+		},
+		{`Unable to access the notebook "/Workspace/Users/wolney.barreto@ifood.com.br/stocks_information"`,
+			`Unable to access the notebook "/Workspace/Users/` + emailRule.AnonymizeOptions.AnonymizeString +
+				`/stocks_information"`,
+			true,
+		},
 		{`'{
                  "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing email leaking joao.silva@gmail.com abc"}],
+                 "messages": [{"role": "user", "content": "testing email leaking "joao.silva@gmail.com" aa"}],
                  "temperature": 0.1}'`,
 			`'{
                  "model": "gpt-3.5-turbo",
-                 "messages": [{"role": "user", "content": "testing email leaking ` + emailRule.AnonymizeOptions.AnonymizeString + ` abc"}],
+                 "messages": [{"role": "user", "content": "testing email leaking "` + emailRule.AnonymizeOptions.AnonymizeString + `" aa"}],
                  "temperature": 0.1}'`,
 			true,
 		},

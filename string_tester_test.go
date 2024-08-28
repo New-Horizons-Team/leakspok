@@ -280,12 +280,12 @@ func TestRedactEmail(t *testing.T) {
 		expected string
 		isLeak   bool
 	}{
-		{`Unable to access the notebook "/Workspace/Users/"wolney.barreto@ifood.com.br"/stocks_information"`,
+		{`Unable to access the notebook "/Workspace/Users/"john.doe@ifood.com.br"/stocks_information"`,
 			`Unable to access the notebook "/Workspace/Users/"` + emailRule.AnonymizeOptions.AnonymizeString +
 				`"/stocks_information"`,
 			true,
 		},
-		{`Unable to access the notebook "/Workspace/Users/wolney.barreto@ifood.com.br/stocks_information"`,
+		{`Unable to access the notebook "/Workspace/Users/john.doe@ifood.com.br/stocks_information"`,
 			`Unable to access the notebook "/Workspace/Users/` + emailRule.AnonymizeOptions.AnonymizeString +
 				`/stocks_information"`,
 			true,

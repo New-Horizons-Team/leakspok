@@ -173,6 +173,12 @@ func TestRedactCPF(t *testing.T) {
 		{`"Unable to access the notebook "/Workspace/Users "216.187.210-97" stocks_information"`,
 			`"Unable to access the notebook "/Workspace/Users "` + cpfRule.AnonymizeOptions.AnonymizeString + `" stocks_information"`,
 			true},
+		{`"Unable to access the notebook "/Workspace/Users/216.187.210-97/stocks_information"`,
+			`"Unable to access the notebook "/Workspace/Users/` + cpfRule.AnonymizeOptions.AnonymizeString + `/stocks_information"`,
+			true},
+		{`"Unable to access the notebook "/Workspace/Users/"216.187.210-97"/stocks_information"`,
+			`"Unable to access the notebook "/Workspace/Users/"` + cpfRule.AnonymizeOptions.AnonymizeString + `"/stocks_information"`,
+			true},
 		{`'{
                  "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing cpf leaking '111444777-35" abc"}],
@@ -280,6 +286,20 @@ func TestRedactEmail(t *testing.T) {
 		expected string
 		isLeak   bool
 	}{
+		{`" \\jhon.doe@gmail.com\\\"\\n\"}]"`,
+			`" \\` + emailRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}]"`,
+			true},
+		{`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\"jhon.doe@gmail.com\\\"\\n\"}], \"temperature\": 0.7}"`,
+			`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\"` +
+				emailRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}], \"temperature\": 0.7}"`,
+			true},
+		{`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\\"jhon.doe@gmail.com\\\"\\n\"}], \"temperature\": 0.7}"`,
+			`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\\"` +
+				emailRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}], \"temperature\": 0.7}"`,
+			true},
+		{`"Unable to access the notebook "/Workspace/Users "jhon.doe@gmail.com" stocks_information"`,
+			`"Unable to access the notebook "/Workspace/Users "` + emailRule.AnonymizeOptions.AnonymizeString + `" stocks_information"`,
+			true},
 		{`Unable to access the notebook "/Workspace/Users/"john.doe@ifood.com.br"/stocks_information"`,
 			`Unable to access the notebook "/Workspace/Users/"` + emailRule.AnonymizeOptions.AnonymizeString +
 				`"/stocks_information"`,
@@ -423,6 +443,30 @@ func TestRedactIPAddress(t *testing.T) {
 		expected string
 		isLeak   bool
 	}{
+		{`" \\180.112.90.22\\\"\\n\"}]"`,
+			`" \\` + ipRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}]"`,
+			true},
+		{`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\"180.112.90.22\\\"\\n\"}], \"temperature\": 0.7}"`,
+			`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\"` +
+				ipRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}], \"temperature\": 0.7}"`,
+			true},
+		{`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\\"180.112.90.22\\\"\\n\"}], \"temperature\": 0.7}"`,
+			`"{\"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"user\", \"content\": \"\\n\\\"` +
+				ipRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}], \"temperature\": 0.7}"`,
+			true},
+		{`"Unable to access the notebook "/Workspace/Users "180.112.90.22" stocks_information"`,
+			`"Unable to access the notebook "/Workspace/Users "` + ipRule.AnonymizeOptions.AnonymizeString + `" stocks_information"`,
+			true},
+		{`Unable to access the notebook "/Workspace/Users/"180.112.90.22"/stocks_information"`,
+			`Unable to access the notebook "/Workspace/Users/"` + ipRule.AnonymizeOptions.AnonymizeString +
+				`"/stocks_information"`,
+			true,
+		},
+		{`Unable to access the notebook "/Workspace/Users/180.112.90.22/stocks_information"`,
+			`Unable to access the notebook "/Workspace/Users/` + ipRule.AnonymizeOptions.AnonymizeString +
+				`/stocks_information"`,
+			true,
+		},
 		{`'{
                  "model": "gpt-3.5-turbo",
                  "messages": [{"role": "user", "content": "testing IP address leaking 180.112.90.22 abc"}],

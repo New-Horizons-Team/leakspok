@@ -122,7 +122,7 @@ func removePunctuation(text string) string {
 func customFields(s string) []string {
 	return strings.FieldsFunc(s, func(r rune) bool {
 		return unicode.IsSpace(r) || r == ',' || r == ';' || r == '!' || r == '?' || r == '(' || r == ')' ||
-			r == '[' || r == ']' || r == '{' || r == '}' || r == '"' || r == '\''
+			r == '[' || r == ']' || r == '{' || r == '}' || r == '"' || r == '\'' || r == '/' || r == '\\'
 	})
 }
 

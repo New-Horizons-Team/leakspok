@@ -159,6 +159,18 @@ func TestRedactCPF(t *testing.T) {
 		expected string
 		isLeak   bool
 	}{
+		{`" \n216.187.210-97"`,
+			`" \n` + cpfRule.AnonymizeOptions.AnonymizeString + `"`,
+			true},
+		{`" \r216.187.210-97"`,
+			`" \r` + cpfRule.AnonymizeOptions.AnonymizeString + `"`,
+			true},
+		{`" \t216.187.210-97"`,
+			`" \t` + cpfRule.AnonymizeOptions.AnonymizeString + `"`,
+			true},
+		{`" \n216.187.210-97\n"`,
+			`" \n` + cpfRule.AnonymizeOptions.AnonymizeString + `\n"`,
+			true},
 		{`" \\216.187.210-97\\\"\\n\"}]"`,
 			`" \\` + cpfRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}]"`,
 			true},
@@ -288,6 +300,12 @@ func TestRedactEmail(t *testing.T) {
 	}{
 		{`" \nandre.zina@gmail.com"`,
 			`" \n` + emailRule.AnonymizeOptions.AnonymizeString + `"`,
+			true},
+		{`" \randre.zina@gmail.com"`,
+			`" \r` + emailRule.AnonymizeOptions.AnonymizeString + `"`,
+			true},
+		{`" \tandre.zina@gmail.com"`,
+			`" \t` + emailRule.AnonymizeOptions.AnonymizeString + `"`,
 			true},
 		{`" \nandre.zina@gmail.com\n"`,
 			`" \n` + emailRule.AnonymizeOptions.AnonymizeString + `\n"`,
@@ -449,6 +467,18 @@ func TestRedactIPAddress(t *testing.T) {
 		expected string
 		isLeak   bool
 	}{
+		{`" \n180.112.90.22"`,
+			`" \n` + ipRule.AnonymizeOptions.AnonymizeString + `"`,
+			true},
+		{`" \r180.112.90.22"`,
+			`" \r` + ipRule.AnonymizeOptions.AnonymizeString + `"`,
+			true},
+		{`" \t180.112.90.22"`,
+			`" \t` + ipRule.AnonymizeOptions.AnonymizeString + `"`,
+			true},
+		{`" \n180.112.90.22\n"`,
+			`" \n` + ipRule.AnonymizeOptions.AnonymizeString + `\n"`,
+			true},
 		{`" \\180.112.90.22\\\"\\n\"}]"`,
 			`" \\` + ipRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}]"`,
 			true},

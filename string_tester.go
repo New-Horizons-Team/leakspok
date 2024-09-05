@@ -150,7 +150,6 @@ func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
 	hasFindings := false
 
 	for _, rule := range t.Rules {
-		//s = strings.ReplaceAll(s, "\\n", "") // Replace \n with an empty string
 		for _, x := range customFields(s) {
 
 			matched = rule.Filter(x)

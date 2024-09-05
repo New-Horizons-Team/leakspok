@@ -286,6 +286,12 @@ func TestRedactEmail(t *testing.T) {
 		expected string
 		isLeak   bool
 	}{
+		{`" \nandre.zina@gmail.com"`,
+			`" \n` + emailRule.AnonymizeOptions.AnonymizeString + `"`,
+			true},
+		{`" \nandre.zina@gmail.com\n"`,
+			`" \n` + emailRule.AnonymizeOptions.AnonymizeString + `\n"`,
+			true},
 		{`" \\jhon.doe@gmail.com\\\"\\n\"}]"`,
 			`" \\` + emailRule.AnonymizeOptions.AnonymizeString + `\\\"\\n\"}]"`,
 			true},

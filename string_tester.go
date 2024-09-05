@@ -118,11 +118,29 @@ func removePunctuation(text string) string {
 
 }
 
+// replaceEscapes replaces escape sequences such as \n, \t, and \r with their corresponding characters
+func replaceEscapes(s string) string {
+	// Use a regular expression to find and replace escape sequences
+	replacer := strings.NewReplacer(
+		"\\n", "", // Replace literal \n with newline
+		"\\t", "", // Replace literal \t with tab
+		"\\r", "", // Replace literal \r with carriage return
+	)
+	return replacer.Replace(s)
+}
+
 // customFields splits a string into fields based on custom delimiters
+//
+//gocyclo:ignore
 func customFields(s string) []string {
-	return strings.FieldsFunc(s, func(r rune) bool {
+	// First, replace the escape sequences so that FieldsFunc can consider them as delimiters
+	// Ex: "\n" -> '\n'
+	escapedString := replaceEscapes(s)
+
+	return strings.FieldsFunc(escapedString, func(r rune) bool {
 		return unicode.IsSpace(r) || r == ',' || r == ';' || r == '!' || r == '?' || r == '(' || r == ')' ||
-			r == '[' || r == ']' || r == '{' || r == '}' || r == '"' || r == '\'' || r == '/' || r == '\\'
+			r == '[' || r == ']' || r == '{' || r == '}' || r == '"' || r == '\'' || r == '/' || r == '\\' ||
+			r == '\n' || r == '\t' || r == '\r'
 	})
 }
 
@@ -132,7 +150,9 @@ func (t *StringTester) AnonymizeFindings(s string) (string, bool) {
 	hasFindings := false
 
 	for _, rule := range t.Rules {
+		//s = strings.ReplaceAll(s, "\\n", "") // Replace \n with an empty string
 		for _, x := range customFields(s) {
+
 			matched = rule.Filter(x)
 			if matched {
 				// Bugfix: if matched, we need to remove comma, dot or other common chars from the string

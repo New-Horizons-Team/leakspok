@@ -118,13 +118,13 @@ func removePunctuation(text string) string {
 
 }
 
-// replaceEscapes replaces escape sequences such as \n, \t, and \r with their corresponding characters
-func replaceEscapes(s string) string {
+// removeEscapes removes escape characters such as '\n', '\r', '\t'
+func removeEscapes(s string) string {
 	// Use a regular expression to find and replace escape sequences
 	replacer := strings.NewReplacer(
-		"\\n", "", // Replace literal \n with newline
-		"\\t", "", // Replace literal \t with tab
-		"\\r", "", // Replace literal \r with carriage return
+		"\\n", "",
+		"\\t", "",
+		"\\r", "",
 	)
 	return replacer.Replace(s)
 }
@@ -133,9 +133,10 @@ func replaceEscapes(s string) string {
 //
 //gocyclo:ignore
 func customFields(s string) []string {
-	// First, replace the escape sequences so that FieldsFunc can consider them as delimiters
-	// Ex: "\n" -> '\n'
-	escapedString := replaceEscapes(s)
+	// First, remove the escape sequences so that FieldsFunc works properly
+	// Otherwise, strings like the "\n" in "\njoe@gmail.com" would be treated as
+	// literal strings instead of actual escape characters.
+	escapedString := removeEscapes(s)
 
 	return strings.FieldsFunc(escapedString, func(r rune) bool {
 		return unicode.IsSpace(r) || r == ',' || r == ';' || r == '!' || r == '?' || r == '(' || r == ')' ||

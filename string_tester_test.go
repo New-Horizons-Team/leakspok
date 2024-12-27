@@ -5,6 +5,26 @@ import (
 	"testing"
 )
 
+func TestFindind(t *testing.T) {
+	rules := RuleSet{}
+	leakspokTester := NewStringTester(rules)
+	leakspokTester.Rules = []Rule{DefaultCPFRule, DefaultIPRule, DefaultEmailRule, DefaultCNPJRule}
+
+	expected := StringTesterResult{BrazilianCPF: true, BrazilianCNPJ: false, EmailAddress: false, IPAddress: false}
+
+	input := "\n\n111444777-35"
+	lines := strings.Split(input, "\n")
+	got, err := leakspokTester.Find(lines)
+
+	if err != nil {
+		t.Errorf("For input %q expected %+v but got %+v", input, expected, got)
+	}
+
+	if got != expected {
+		t.Errorf("For input %q expected %+v but got %+v", input, expected, got)
+	}
+}
+
 func TestFindCPF(t *testing.T) {
 	tests := []struct {
 		input  string
@@ -784,4 +804,8 @@ func TestMaskFindings(t *testing.T) {
 			}
 		}
 	}
+}
+
+func TestMixedRedact(t *testing.T) {
+
 }

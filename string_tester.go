@@ -50,10 +50,11 @@ func NewStringTester(set RuleSet) *StringTester {
 
 // Find creates a new default StringTesterResult object with all default rules included
 func (t *StringTester) Find(s []string) (StringTesterResult, error) {
-	matched := false
 	results := make(map[string]bool)
 
 	for _, rule := range t.Rules {
+		matched := false
+
 		for _, str := range s {
 			for _, x := range strings.Fields(str) {
 

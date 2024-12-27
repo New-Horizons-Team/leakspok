@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestFindind(t *testing.T) {
+func TestFindCornerCase(t *testing.T) {
 	rules := RuleSet{}
 	leakspokTester := NewStringTester(rules)
 	leakspokTester.Rules = []Rule{DefaultCPFRule, DefaultIPRule, DefaultEmailRule, DefaultCNPJRule}

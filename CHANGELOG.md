@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.6] - 2025-01-07
+- Fix Chain Matches by Breaking Lines 
+
+Example:
+
+```shell
+"data": "\n\n\n\n<CPF>"}' -> {"cpf_number": true, "cnpj_number": true, "email_address": true, "ip_address": true}
+```
+
 ## [0.2.5] - 2024-09-05
 - Fix (another) escape issue:
 

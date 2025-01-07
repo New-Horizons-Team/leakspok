@@ -57,8 +57,8 @@ func (t *StringTester) Find(s []string) (StringTesterResult, error) {
 
 		for _, str := range s {
 			for _, x := range strings.Fields(str) {
-
 				matched = rule.Filter(x)
+
 				if matched {
 					break
 				}

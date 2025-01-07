@@ -118,7 +118,31 @@ func matchphonesWithExts(s string) bool {
 }
 
 func matchemail(s string) bool {
-	return emailRegexp.MatchString(s)
+	if emailRegexp.MatchString(s) {
+		// Since the golang regex engine does not support lookbehinds, we need to validate
+		// cases such as the email address is <name>@1.2.3
+		domain := strings.Split(s, "@")[1]
+		// Check if the domain is entirely numeric with dots
+		domainParts := strings.Split(domain, ".")
+		for _, part := range domainParts {
+			if !isNumeric(part) {
+				return true
+			}
+		}
+
+	}
+
+	return false
+}
+
+// isNumeric checks if a string is purely numeric
+func isNumeric(s string) bool {
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
 }
 
 func matchipv4(s string) bool {
